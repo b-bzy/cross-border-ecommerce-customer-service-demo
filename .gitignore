@@ -1,0 +1,41 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*
+secrets*
+
+# Databases, caches, and generated runtime data
+*.db
+*.sqlite
+*.sqlite3
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+node_modules/
+dist/
+build/
+coverage/
+.cache/
+
+# Local uploads, exports, and generated artifacts
+uploads/
+exports/
+output/
+out/
+*.log
+
+# OS and editors
+.DS_Store
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.swp
