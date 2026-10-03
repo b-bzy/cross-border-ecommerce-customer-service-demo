@@ -13,6 +13,7 @@ secrets*
 *.db
 *.sqlite
 *.sqlite3
+*.egg-info/
 __pycache__/
 .pytest_cache/
 .ruff_cache/
@@ -39,3 +40,25 @@ out/
 # Temporary files
 *.tmp
 *.swp
+
+# Legacy pre-refactor reference material — never publish
+/client/
+/config/
+/dialog.py
+/e2e_score.py
+/function_call/
+/mcp_core/
+/prompts.py
+/server.sh
+/start.py
+/test.py
+/test/
+/train/
+/utils/
+
+# Demo runtime and quality artifacts
+/artifacts/
+/var/
+/htmlcov/
+.coverage
+.mypy_cache/

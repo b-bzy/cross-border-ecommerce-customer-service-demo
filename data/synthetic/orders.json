@@ -1,0 +1,55 @@
+[
+  {
+    "schema_version": "1.0",
+    "is_synthetic": true,
+    "order_id": "ORD-DEMO-1001",
+    "customer_id": "CUST-DEMO-001",
+    "status": "in_transit",
+    "created_at": "2026-09-22T09:00:00Z",
+    "destination_market": "DE",
+    "items": [{"sku": "SKU-DEMO-RED-M", "name": "Demo Travel Pouch", "quantity": 1}],
+    "address": "12 Fictional Quay, Berlin",
+    "version": 3,
+    "source_id": "order:ORD-DEMO-1001"
+  },
+  {
+    "schema_version": "1.0",
+    "is_synthetic": true,
+    "order_id": "ORD-DEMO-1002",
+    "customer_id": "CUST-DEMO-001",
+    "status": "processing",
+    "created_at": "2026-09-29T07:15:00Z",
+    "destination_market": "SG",
+    "items": [{"sku": "SKU-DEMO-BLUE-S", "name": "Demo Packing Cube", "quantity": 2}],
+    "address": "88 Harbor Loop, Singapore",
+    "version": 1,
+    "source_id": "order:ORD-DEMO-1002"
+  },
+  {
+    "schema_version": "1.0",
+    "is_synthetic": true,
+    "order_id": "ORD-DEMO-1003",
+    "customer_id": "CUST-DEMO-001",
+    "status": "delivered",
+    "created_at": "2026-09-05T10:00:00Z",
+    "delivered_at": "2026-09-12T11:30:00Z",
+    "destination_market": "SG",
+    "items": [{"sku": "SKU-DEMO-GREEN-L", "name": "Demo Foldable Tote", "quantity": 1}],
+    "address": "88 Harbor Loop, Singapore",
+    "version": 2,
+    "source_id": "order:ORD-DEMO-1003"
+  },
+  {
+    "schema_version": "1.0",
+    "is_synthetic": true,
+    "order_id": "ORD-DEMO-2001",
+    "customer_id": "CUST-DEMO-002",
+    "status": "processing",
+    "created_at": "2026-09-30T08:00:00Z",
+    "destination_market": "DE",
+    "items": [{"sku": "SKU-DEMO-RED-M", "name": "Demo Travel Pouch", "quantity": 1}],
+    "address": "7 Imaginary Platz, Berlin",
+    "version": 1,
+    "source_id": "order:ORD-DEMO-2001"
+  }
+]

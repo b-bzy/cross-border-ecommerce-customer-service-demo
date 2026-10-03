@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test-offline-demo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Demo dependencies
+        run: python -m pip install -e ".[dev]"
+      - name: Check formatting
+        run: ruff format --check .
+      - name: Lint
+        run: ruff check .
+      - name: Run offline tests
+        run: pytest
+      - name: Run offline evaluation
+        run: python -m commerce_support_demo.evals

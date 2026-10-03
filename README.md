@@ -1,37 +1,171 @@
-# 跨境电商智能客服项目
+# 跨境电商智能客服 Demo
 
-> **公开作品集骨架（持续完善中）**：本仓库用于归档跨境电商智能客服的产品设计方法与经脱敏处理的公开材料。当前版本先建立公开展示、版本管理与隐私边界；仅在确认可公开后，再补充方案、Demo、架构图和合成示例。
+> **Shopee 跨境电商场景化智能客服 Demo**：使用独立实现、合成数据与抽象规则构建的作品集项目。它不是 Shopee 官方系统，不连接 Shopee 生产环境，也不包含真实买家、订单、会话、业务规则或凭证。
 
-## 项目背景
+## 展示什么
 
-跨境电商的售前与售后咨询通常同时涉及多语言沟通、商品与订单信息检索、物流状态解释、退款/换货规则判断，以及复杂问题向人工坐席的无缝升级。本项目聚焦将这些高频服务链路抽象为可配置、可评估、有人机协同兜底的智能客服产品方案。
+该 Demo 面向跨境电商买家常见的订单与售后问题，支持中文、英文及中英混合输入，并展示：
 
-## 公开版本的范围
+- 一级轻量意图召回（Top-3）与候选受限的二级 Claude 精排；
+- 订单查询、物流追踪、物流异常、退货资格、退款进度和关税 FAQ；
+- “查订单 → 改地址（预览）→ 显式确认 → 催发货（预览）→ 显式确认”的多轮链路；
+- 会话中的当前订单继承与跨客户订单拒绝；
+- MCP 统一暴露合成订单、物流、政策和工单工具；
+- 后端确定性策略控制：LLM 不拥有 MCP 工具，也不能直接执行写操作；
+- 冻结的合成评测集与离线回归测试。
 
-本仓库将逐步沉淀以下可公开内容：
+## 核心架构
 
-- 产品问题定义、用户旅程与服务链路设计
-- 意图识别、知识问答、人工接管与服务质检的方案说明
-- 使用**合成数据**构造的示例流程、评估方式或 Demo
-- 不涉及生产环境的架构取舍与产品复盘
+```text
+HTTP Chat API
+  → 会话状态与订单 ID 解析
+  → 一级轻量 Top-3 意图召回
+  → Claude 结构化精排（可选；仅候选集）
+  → 确定性策略层
+       ├─ 只读：调用合成订单 / 物流 / 政策工具
+       └─ 写入：只创建待确认操作
+  → 显式确认接口校验 digest、订单版本与时效
+  → MCP / in-process 合成业务服务
+```
 
-## 当前状态
+所有业务事实来自 `data/synthetic/` 中的版本化虚构 fixture。服务重启会重置模拟写操作，这是刻意保留的 Demo 行为。
 
-- [x] 建立公开仓库与作品集入口
-- [x] 明确脱敏和公开边界
-- [ ] 补充已审核的产品方案与交互材料
-- [ ] 补充合成示例与可复现的评估说明
+## 快速开始：离线模式
 
-## 脱敏与公开说明
+离线模式不需要模型 Key、不会发起网络模型调用，适合本地演示和测试。
 
-本仓库**不包含**任何生产环境源码、模型凭证、客户信息、真实聊天记录、订单数据、内部知识库、原始业务规则、内部文档或部署配置。
+```bash
+git clone https://github.com/b-bzy/cross-border-ecommerce-customer-service-demo.git
+cd cross-border-ecommerce-customer-service-demo
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev]"
 
-如后续材料来自企业实践，公开版本仅保留经过抽象与脱敏后的问题定义、产品方法论和独立重建的示例；示例中的名称、数据、流程标识和集成信息均应为匿名化或合成内容。任何历史业务指标都会明确标注其口径，且不会被表述为本仓库 Demo 的复现结果。
+DEMO_ROUTER_MODE=offline \
+DEMO_COMMERCE_TRANSPORT=in_process \
+python -m uvicorn commerce_support_demo.main:app --host 127.0.0.1 --port 8000
+```
 
-## 关键词
+打开 <http://127.0.0.1:8000/docs> 查看交互式 API 文档。
 
-`跨境电商` `智能客服` `AI Agent` `多语言服务` `知识问答` `意图路由` `人工接管` `服务质检` `人机协同`
+健康检查：
 
----
+```bash
+curl --fail http://127.0.0.1:8000/healthz
+curl --fail http://127.0.0.1:8000/readyz
+```
 
-本仓库的公开材料会在完成隐私、保密与版权审核后持续补充。
+## 核心会话示例
+
+### 1. 查询订单
+
+```bash
+curl --fail -X POST \
+  http://127.0.0.1:8000/v1/conversations/demo-001/messages \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "customer_id": "CUST-DEMO-001",
+    "locale": "en-SG",
+    "message": "Where is order ORD-DEMO-1001?"
+  }'
+```
+
+响应会带有：路由阶段、候选意图、受控工具事件和合成 `source_id`。
+
+### 2. 改地址：仅创建预览
+
+```bash
+curl --fail -X POST \
+  http://127.0.0.1:8000/v1/conversations/demo-002/messages \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "customer_id": "CUST-DEMO-001",
+    "locale": "en-SG",
+    "message": "Change delivery address for ORD-DEMO-1002",
+    "slots": {"new_address": "99 Demo Crescent, Singapore"}
+  }'
+```
+
+该请求**不会**修改订单。响应中的 `pending_action` 包含 `action_id` 与 `action_digest`。必须用独立确认接口执行写操作：
+
+```bash
+curl --fail -X POST \
+  "http://127.0.0.1:8000/v1/actions/<action_id>/confirm" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "customer_id": "CUST-DEMO-001",
+    "conversation_id": "demo-002",
+    "decision": "confirm",
+    "action_digest": "<action_digest>"
+  }'
+```
+
+自然语言中的“确认 / yes”不会触发写入。确认接口会校验客户、会话、冻结参数、digest、操作时效和订单版本；重复确认只返回已保存的结果，不重复写入。
+
+## Claude 二级精排
+
+用户可选择 `hybrid` 或 `live_always` 模式接入 Claude。二级模型使用官方 Anthropic Python SDK 和 `claude-opus-5`，以 Pydantic structured output 返回意图选择、置信度、缺失槽位和澄清 / 转人工决定。
+
+模型输入只包含：
+
+- 当前未受信任的买家消息；
+- locale；
+- 已验证的安全槽位；
+- 一级 Top-3 候选意图与得分。
+
+模型**不接收**订单详情、完整会话、MCP 工具或写权限。业务策略、订单归属、退货资格、地址修改和催发货均由确定性后端处理。
+
+配置本地环境变量或已登录的 Anthropic profile 后再运行：
+
+```bash
+DEMO_ROUTER_MODE=hybrid \
+DEMO_COMMERCE_TRANSPORT=in_process \
+DEMO_CLAUDE_MODEL=claude-opus-5 \
+python -m uvicorn commerce_support_demo.main:app --host 127.0.0.1 --port 8000
+```
+
+> Live 模式会调用外部 API 并产生费用。默认测试、CI 和离线评测不会调用 Claude。
+
+## MCP 模式
+
+默认 `in_process` 模式便于无网络测试。要展示 MCP 协议边界，切换为：
+
+```bash
+DEMO_ROUTER_MODE=offline \
+DEMO_COMMERCE_TRANSPORT=mcp \
+python -m uvicorn commerce_support_demo.main:app --host 127.0.0.1 --port 8000
+```
+
+服务会启动本地 stdio MCP 子进程，提供以下受控工具：
+
+- `orders_get`、`shipments_track`、`refunds_get`；
+- `policies_get`、`returns_check_eligibility`；
+- `orders_update_address`、`tickets_create_delivery_urge`；
+- `handoffs_create`。
+
+写工具必须收到由确认接口签发、绑定到固定参数与订单版本的短时 capability，不能由用户或模型自由拼装。
+
+## 测试与评测
+
+```bash
+pytest
+python -m commerce_support_demo.evals
+```
+
+评测产物写入被 Git 忽略的 `output/offline-evaluation.json`。它仅统计合成数据上的离线路由结果；在未实际执行、冻结测试集和记录口径之前，本仓库不会声称任何生产或绝对性能指标。
+
+## 公开与隐私边界
+
+- 所有 `CUST-DEMO-*`、`ORD-DEMO-*`、物流、地址、姓名、政策和工单均为虚构数据；
+- 不提交 API Key、Token、`.env`、真实订单、客户会话、内部网址、企业源码或生产配置；
+- 根目录已隔离旧的车载参考材料，公开提交时请只显式暂存本 Demo 的新文件，**不要使用** `git add .`；
+- 该项目展示产品设计、受控 Agent 编排、MCP 工具边界、多轮状态和评测方法，不构成真实平台客服能力或合规建议。
+
+详细说明见：
+
+- [`docs/跨境电商智能客服系统改造方案.md`](docs/跨境电商智能客服系统改造方案.md)
+- [`docs/architecture.md`](docs/architecture.md)
+- [`docs/safety.md`](docs/safety.md)
+- [`docs/synthetic-data.md`](docs/synthetic-data.md)
+- [`docs/evaluation.md`](docs/evaluation.md)

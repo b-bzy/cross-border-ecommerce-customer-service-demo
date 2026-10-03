@@ -1,0 +1,6 @@
+{"case_id":"order-en-001","conversation_id":"eval-order","request":{"customer_id":"CUST-DEMO-001","locale":"en-SG","message":"Where is order ORD-DEMO-1001?"},"expected_intent":"order_status"}
+{"case_id":"shipment-zh-001","conversation_id":"eval-shipment","request":{"customer_id":"CUST-DEMO-001","locale":"zh-CN","message":"查订单 ORD-DEMO-1001 的物流"},"expected_intent":"shipment_tracking"}
+{"case_id":"address-en-001","conversation_id":"eval-address","request":{"customer_id":"CUST-DEMO-001","locale":"en-SG","message":"Change delivery address for ORD-DEMO-1002","slots":{"new_address":"99 Demo Crescent, Singapore"}},"expected_intent":"address_change"}
+{"case_id":"refund-en-001","conversation_id":"eval-refund","request":{"customer_id":"CUST-DEMO-001","locale":"en-SG","message":"When will I get my refund for ORD-DEMO-1003?"},"expected_intent":"refund_status"}
+{"case_id":"return-zh-001","conversation_id":"eval-return","request":{"customer_id":"CUST-DEMO-001","locale":"zh-CN","message":"ORD-DEMO-1003 还能退吗"},"expected_intent":"return_eligibility"}
+{"case_id":"handoff-zh-001","conversation_id":"eval-handoff","request":{"customer_id":"CUST-DEMO-001","locale":"zh-CN","message":"我要人工客服"},"expected_intent":"human_handoff"}

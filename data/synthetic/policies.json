@@ -1,0 +1,22 @@
+[
+  {
+    "schema_version": "1.0",
+    "is_synthetic": true,
+    "policy_id": "POLICY-DEMO-RETURNS-001",
+    "topic": "return_eligibility",
+    "market": "global",
+    "revision": "2026.10",
+    "facts": {"return_window_days": 30, "requires_delivered_order": true},
+    "source_id": "policy:POLICY-DEMO-RETURNS-001"
+  },
+  {
+    "schema_version": "1.0",
+    "is_synthetic": true,
+    "policy_id": "POLICY-DEMO-DUTIES-DE-001",
+    "topic": "customs_duties",
+    "market": "DE",
+    "revision": "2026.10",
+    "facts": {"message": "Demo orders may require destination-market import processing. This fictional policy does not calculate real taxes."},
+    "source_id": "policy:POLICY-DEMO-DUTIES-DE-001"
+  }
+]

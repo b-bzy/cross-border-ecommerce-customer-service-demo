@@ -1,0 +1,7 @@
+{
+  "schema_version": "1.0",
+  "is_synthetic": true,
+  "fixture_version": "2026-10-02",
+  "statement": "Every record in this directory is fictional, purpose-built for this portfolio Demo, and cannot query a real commerce system.",
+  "supported_locales": ["zh-CN", "en-SG", "en-US"]
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "schema_version": "1.0",
+    "is_synthetic": true,
+    "customer_id": "CUST-DEMO-001",
+    "display_name": "Avery Lin",
+    "market": "SG",
+    "source_id": "customer:CUST-DEMO-001"
+  },
+  {
+    "schema_version": "1.0",
+    "is_synthetic": true,
+    "customer_id": "CUST-DEMO-002",
+    "display_name": "Morgan Vale",
+    "market": "DE",
+    "source_id": "customer:CUST-DEMO-002"
+  }
+]

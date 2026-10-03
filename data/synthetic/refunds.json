@@ -1,0 +1,12 @@
+[
+  {
+    "schema_version": "1.0",
+    "is_synthetic": true,
+    "order_id": "ORD-DEMO-1003",
+    "refund_id": "REF-DEMO-1003",
+    "status": "processing",
+    "submitted_at": "2026-09-28T10:00:00Z",
+    "expected_completion": "2026-10-04",
+    "source_id": "refund:REF-DEMO-1003"
+  }
+]

@@ -1,0 +1,82 @@
+[
+  {
+    "intent": "order_status",
+    "route": "TASK",
+    "operation": "orders_get",
+    "required_slots": ["order_id"],
+    "write": false,
+    "examples": ["where is my order", "check order status", "我的订单到哪了", "查订单", "订单状态", "order ORD-DEMO-1001"]
+  },
+  {
+    "intent": "shipment_tracking",
+    "route": "TASK",
+    "operation": "shipments_track",
+    "required_slots": ["order_id"],
+    "write": false,
+    "examples": ["track my parcel", "where is my package", "物流到哪里了", "查物流", "包裹在哪", "tracking ORD-DEMO-1001"]
+  },
+  {
+    "intent": "shipment_exception",
+    "route": "TASK",
+    "operation": "shipments_track",
+    "required_slots": ["order_id"],
+    "write": false,
+    "examples": ["stuck in customs", "shipment delayed", "物流卡住了", "清关两天了", "包裹延误"]
+  },
+  {
+    "intent": "address_change",
+    "route": "TASK",
+    "operation": "orders_update_address",
+    "required_slots": ["order_id", "new_address"],
+    "write": true,
+    "examples": ["change delivery address", "update my shipping address", "修改收货地址", "改地址", "改寄到新地址"]
+  },
+  {
+    "intent": "delivery_urge",
+    "route": "TASK",
+    "operation": "tickets_create_delivery_urge",
+    "required_slots": ["order_id"],
+    "write": true,
+    "examples": ["please speed up delivery", "urge shipment", "催发货", "帮我催一下", "什么时候发货"]
+  },
+  {
+    "intent": "return_eligibility",
+    "route": "FAQ",
+    "operation": "returns_check_eligibility",
+    "required_slots": ["order_id"],
+    "write": false,
+    "examples": ["can I return this", "return window", "可以退货吗", "还能退吗", "退货资格"]
+  },
+  {
+    "intent": "refund_status",
+    "route": "TASK",
+    "operation": "refunds_get",
+    "required_slots": ["order_id"],
+    "write": false,
+    "examples": ["where is my refund", "when will I get my money", "退款到账了吗", "退款进度", "退款还没到"]
+  },
+  {
+    "intent": "customs_duties",
+    "route": "FAQ",
+    "operation": "policies_get",
+    "required_slots": [],
+    "write": false,
+    "examples": ["import duties", "customs tax", "关税怎么收", "德国要交税吗", "清关税费"]
+  },
+  {
+    "intent": "human_handoff",
+    "route": "HANDOFF",
+    "operation": "handoffs_create",
+    "required_slots": [],
+    "write": false,
+    "examples": ["talk to a person", "real agent", "人工客服", "转人工", "投诉"]
+  },
+  {
+    "intent": "chitchat_or_out_of_scope",
+    "route": "CHITCHAT",
+    "operation": null,
+    "required_slots": [],
+    "write": false,
+    "examples": ["tell me a joke", "what is the weather", "讲个笑话", "新加坡天气怎么样"]
+  }
+]
